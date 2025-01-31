@@ -25,7 +25,7 @@ class MusicController extends Controller
         ]);
 
         try {
-            $this->musicImportService->import($request->file('file'));
+            $this->musicImportService->importFromCsv($request->file('file'));
             return response()->json(['message' => 'Importação concluída com sucesso.'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
