@@ -19,7 +19,7 @@ services:
     volumes:
       - ./backend:/var/www/html
     ports:
-      - "9000:8000"
+      - "8000:8000"
     depends_on:
       - db
     networks:
@@ -32,7 +32,7 @@ services:
       dockerfile: Dockerfile
     container_name: nextjs-app
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:9000/api
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api
     volumes:
       - ./frontend/my-app:/usr/src/app
     ports:
