@@ -6,8 +6,8 @@ Este projeto é uma aplicação que utiliza **Laravel 11** como backend e **Next
 
 ### 1️⃣ **Clonar o repositório**
 ```sh
-git clone https://github.com/seu-repositorio.git
-cd nome-do-repositorio
+git clone https://github.com/maax103/laravel-next.git
+cd laravel-next
 ```
 
 ### 2️⃣ **Subir os containers Docker**
