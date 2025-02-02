@@ -15,7 +15,7 @@ class MusicUserSeeder extends Seeder
         $musics = Music::all();
 
         foreach ($users as $user) {
-            $randomMusics = $musics->random(rand(1, 3));
+            $randomMusics = $musics->random(rand(1, 2));
             foreach ($randomMusics as $music) {
                 DB::table('music_user')->insert([
                     'music_id' => $music->id,
