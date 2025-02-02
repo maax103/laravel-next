@@ -35,6 +35,8 @@ WORKDIR /var/www/html
 # Copy existing application
 COPY . .
 
+RUN cp .env.example .env
+
 # Install Laravel dependencies
 RUN composer install && php artisan key:generate
 
