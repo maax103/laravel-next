@@ -3,4 +3,5 @@ export type Music = {
     title: string;
     artist: string;
     liked: boolean;
+    url: string;
 }

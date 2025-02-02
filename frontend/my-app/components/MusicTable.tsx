@@ -1,4 +1,5 @@
 import { Music } from "@/types/MusicType";
+import Link from "next/link";
 import DataTable, { TableColumn } from "react-data-table-component";
 
 type MusicTableProps =  {
@@ -22,14 +23,22 @@ export const MusicTable = ({ musics, onLike }: MusicTableProps) => {
                 width: '40%',
             },
             {
-                name: 'Curtir',
+                name: 'Ações',
                 cell: music => (
-                    <button
-                        onClick={() => onLike && onLike(music.id, music.liked)}
-                        className="pl-2 text-red-500 hover:text-red-600 transition-colors"
-                    >
-                        {music.liked ? '❤️' : '🤍'}
-                    </button>
+
+                    <div className="flex gap-6 justify-center items-center">
+                        <button
+                            onClick={() => onLike && onLike(music.id, music.liked)}
+                            className="pl-2 text-red-500 hover:text-red-600 transition-colors font-mono"
+                            >
+                            {music.liked ? '❤️' : '🤍'}
+                        </button>
+                        <p className="text-center text-gray-600 dark:text-gray-400">
+                            <Link href={music.url} target="_blank" rel="noreferrer">
+                                <span className="text-gray-500 font-mono">▶</span>
+                            </Link>
+                        </p>
+                    </div>
                 ),
                 width: '20%',
                 

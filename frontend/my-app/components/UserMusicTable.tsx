@@ -1,4 +1,5 @@
 import { Music } from "@/types/MusicType";
+import Link from "next/link";
 
 interface UserMusicTableProps {
     musics: Music[];
@@ -35,12 +36,17 @@ export const UserMusicTable = ({ musics, onLike }: UserMusicTableProps) => {
                     {music.artist}
                 </td>
                 {onLike && (
-                <td className="px-6 py-4 whitespace-nowrap text-sm flex justify-center">
+                <td className="px-6 py-4 whitespace-nowrap text-sm flex justify-center items-center gap-6">
                     <button
                     onClick={() => onLike && onLike(music.id, music.liked)}
                     >
                         ❌
                     </button>
+                    <p className="text-center text-gray-600 dark:text-gray-400">
+                        <Link href={music.url} target="_blank" rel="noreferrer">
+                            <span className="text-gray-500 font-mono">▶</span>
+                        </Link>
+                    </p>
                 </td>
                 )}
                 </tr>
