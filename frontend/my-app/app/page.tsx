@@ -1,21 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [formCanBeSubmitted, setFormCanBeSubmitted] = useState(true);
 
-  const [formCanBySubmitted, setFormCanBySubmitted] = useState(true);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      router.replace('/dashboard');
+    } else {
+      setLoading(false);
+    }
+  }, [router]);
+
+  useEffect(() => {
+    const from = new URLSearchParams(window.location.search).get('from');
+    if (from === 'register') {
+      alert("Usuário criado com sucesso!");
+    }
+  },[])
 
   const handleLogin = async (e: React.FormEvent) => {
 
     e.preventDefault();
-    if (!formCanBySubmitted) return;
-    setFormCanBySubmitted(false);
+    if (!formCanBeSubmitted) return;
+    setFormCanBeSubmitted(false);
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
@@ -24,24 +41,31 @@ export default function Home() {
           body: JSON.stringify({ email, password }),
       });
 
+      if (res.status === 401) {
+          alert("E-mail ou senha incorretos");
+          setFormCanBeSubmitted(true);
+          return;
+      }
+
       if (!res.ok) {
           console.error("Erro ao autenticar usuário:", res.statusText);
           return;
       }
 
       const data = await res.json();
-      console.log(data);
 
       sessionStorage.setItem('token', data.token);
       sessionStorage.setItem('user', JSON.stringify(data.user));
 
       router.push('/dashboard');
     } catch (error) {
-        if (error instanceof Error) console.error("Erro ao autenticar usuário:", error.message);
+        if (error instanceof Error) alert("Erro ao autenticar usuário: " + error.message);
         else console.error("Erro ao autenticar usuário");
-        setFormCanBySubmitted(true);
+        setFormCanBeSubmitted(true);
     }
   };
+
+  if (loading) return null;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">

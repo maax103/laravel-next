@@ -5,12 +5,12 @@ interface Music {
     liked: boolean;
 }
 
-interface MusicTableProps {
+interface UserMusicTableProps {
     musics: Music[];
     onLike?: (musicId: number, liked: boolean) => void;
 }
   
-export const MusicTable = ({ musics, onLike }: MusicTableProps) => {
+export const UserMusicTable = ({ musics, onLike }: UserMusicTableProps) => {
     return (
         <div className="overflow-x-auto bg-white rounded-lg shadow">
         <table className="w-full table-fixed">
@@ -43,9 +43,8 @@ export const MusicTable = ({ musics, onLike }: MusicTableProps) => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm flex justify-center">
                     <button
                     onClick={() => onLike && onLike(music.id, music.liked)}
-                    className="text-red-500 hover:text-red-600 transition-colors"
                     >
-                    {music.liked ? '❤️' : '🤍'}
+                        ❌
                     </button>
                 </td>
                 )}

@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
+  const router = useRouter();
   const [canSendForm, setCanSendForm] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -28,15 +30,19 @@ export default function Register() {
         body: JSON.stringify({ name, email, password, password_confirmation: confirmPassword }),
       });
 
-      if (!res.ok) {
+      if (res.status === 422) {
+        alert("E-mail já cadastrado!");
+        setCanSendForm(true);
+        return
+      }
+
+      if (res.status !== 204) {
         console.error("Erro ao criar usuário:", res.statusText);
+        setCanSendForm(true);
         return;
       }
 
-      const data = await res.json();
-      console.log(data);
-
-      alert("Usuário criado com sucesso!");
+      router.push("/?from=register");
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
       setCanSendForm(true);
