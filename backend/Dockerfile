@@ -28,8 +28,6 @@ WORKDIR /var/www/html
 
 COPY . .
 
-RUN cp .env.example .env
-
 EXPOSE 8000
 
 ENTRYPOINT composer install && php artisan key:generate && php artisan serve --host=0.0.0.0
