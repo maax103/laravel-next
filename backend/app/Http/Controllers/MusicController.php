@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Music;
 use App\Services\MusicImportService;
 use App\Services\MusicUserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class MusicController extends Controller
 {
@@ -18,18 +20,81 @@ class MusicController extends Controller
         $this->musicUserService = $musicUserService;
     }
 
-    public function import(Request $request)
+    public function index()
     {
-        $request->validate([
-            'file' => 'required|file|mimes:csv,txt|max:2048',
+        $musics = Music::all();
+        return response()->json($musics);
+    }
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string',
+            'artist' => 'required|string',
+            'album' => 'nullable|string',
+            'isrc' => 'required|string|unique:musics,isrc',
+            'platform' => 'required|string',
+            'track_id' => 'required|string|unique:musics,track_id',
+            'duration' => 'required|integer',
+            'added_date' => 'required|date',
+            'added_by' => 'nullable|integer|exists:users,id',
+            'url' => 'nullable|url',
         ]);
 
-        try {
-            $this->musicImportService->importFromCsv($request->file('file'));
-            return response()->json(['message' => 'Importação concluída com sucesso.'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        $music = Music::create($request->all());
+        return response()->json($music, 201);
+    }
+
+    public function show($id)
+    {
+        $music = Music::find($id);
+        if (!$music) {
+            return response()->json(['error' => 'Música não encontrada'], 404);
+        }
+        return response()->json($music);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $music = Music::find($id);
+        if (!$music) {
+            return response()->json(['error' => 'Música não encontrada'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'sometimes|required|string',
+            'artist' => 'sometimes|required|string',
+            'album' => 'nullable|string',
+            'isrc' => "sometimes|required|string|unique:musics,isrc,{$id}",
+            'platform' => 'sometimes|required|string',
+            'track_id' => "sometimes|required|string|unique:musics,track_id,{$id}",
+            'duration' => 'sometimes|required|integer',
+            'added_date' => 'sometimes|required|date',
+            'added_by' => 'nullable|integer|exists:users,id',
+            'url' => 'nullable|url',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $music->update($request->all());
+        return response()->json($music);
+    }
+
+    public function destroy($id)
+    {
+        $music = Music::find($id);
+        if (!$music) {
+            return response()->json(['error' => 'Música não encontrada'], 404);
+        }
+
+        $music->delete();
+        return response()->json(['message' => 'Música excluída com sucesso']);
     }
 
     public function associateUserMusic(Request $request)
@@ -40,18 +105,18 @@ class MusicController extends Controller
         ]);
 
         try {
-            $this->musicUserService->associate($request->input('music_id'), $request->input('user_id'));
+            $this->musicUserService->associateOrDisassociate($request->input('music_id'), $request->input('user_id'));
             return response()->json(['message' => 'Usuário associado à música com sucesso.'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
-    public function getUserMusic(Request $request)
+    public function getUserMusic(Request $request, $user_id = null)
     {
-        $userId = $request->input('user_id');
+        $userId = $user_id ?: $request->user()->id;
 
-        $query = "SELECT users.name, musics.title 
+        $query = "SELECT musics.* 
                 FROM users 
                 INNER JOIN music_user ON users.id = music_user.user_id 
                 INNER JOIN musics ON musics.id = music_user.music_id";
@@ -67,4 +132,22 @@ class MusicController extends Controller
 
         return response()->json($musics);
     }
+
+    public function likeOrDislike(Request $request, $music_id)
+    {
+        
+        $music = Music::find($music_id);
+
+        if (!$music) {
+            return response()->json(['error' => 'Música não encontrada'], 404);
+        }
+
+        try {
+            $like = $this->musicUserService->associateOrDisassociate($music_id, $request->user()->id);
+            return response()->json(['message' => 'Operação realizada com sucesso.', 'like_status' => $like], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 }
