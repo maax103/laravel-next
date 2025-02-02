@@ -15,19 +15,19 @@ export const UserTable = ({ users }: UserTableProps) => {
 
   const columns: TableColumn<User>[] = [
     {
-      name: 'Nome',
+      name: 'NOME',
       selector: row => row.name,
       sortable: true,
       width: '40%',
     },
     {
-      name: 'E-mail',
+      name: 'E-MAIL',
       selector: row => row.email,
       sortable: true,
       width: '40%',
     },
     {
-      name: 'Ações',
+      name: 'AÇÕES',
       cell: row => (
         <button
           onClick={() => handleViewMusics(row.id)}

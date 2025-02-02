@@ -11,19 +11,19 @@ export const MusicTable = ({ musics, onLike }: MusicTableProps) => {
 
     const columns: TableColumn<Music>[] = [
             {
-                name: 'Música',
+                name: 'TÍTULO',
                 selector: music => music.title,
                 sortable: true,
                 width: '40%',
             },
             {
-                name: 'Artista',
+                name: 'ARTISTA',
                 selector: music => music.artist,
                 sortable: true,
                 width: '40%',
             },
             {
-                name: 'Ações',
+                name: 'AÇÕES',
                 cell: music => (
 
                     <div className="flex gap-6 justify-center items-center">

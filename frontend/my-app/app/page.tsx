@@ -48,7 +48,8 @@ export default function Home() {
       }
 
       if (!res.ok) {
-          console.error("Erro ao autenticar usuário:", res.statusText);
+          alert("Erro ao autenticar usuário: " +  res.statusText);
+          setFormCanBeSubmitted(true);
           return;
       }
 

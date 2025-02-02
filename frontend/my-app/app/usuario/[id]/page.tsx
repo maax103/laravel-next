@@ -1,6 +1,6 @@
 'use client';
 
-import { MusicTable } from "@/components/MusicTable";
+import { UserMusicTable } from "@/components/UserMusicTable";
 import { Music } from "@/types/MusicType";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -64,7 +64,7 @@ export default function User() {
 
             {musics.length > 0 ? (
             <div className='mb-8'>
-                <MusicTable
+                <UserMusicTable
                     musics={musics}
                     />    
             </div>
