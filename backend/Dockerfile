@@ -44,4 +44,4 @@ RUN composer install && php artisan key:generate
 EXPOSE 8000
 
 # Start PHP-FPM server
-CMD php artisan serve --host=0.0.0.0
+ENTRYPOINT php artisan serve --host=0.0.0.0

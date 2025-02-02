@@ -18,6 +18,7 @@ services:
       XDEBUG_CONFIG: client_host=host.docker.internal client_port=9003
     volumes:
       - ./backend:/var/www/html
+      - /var/www/html/vendor
     ports:
       - "8000:8000"
     depends_on:
