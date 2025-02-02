@@ -8,7 +8,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Artisan::command('import:music {file}', function ($file) {
+Artisan::command('import {file}', function ($file) {
     $musicImportService = new MusicImportService();
 
     try {
