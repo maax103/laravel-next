@@ -1,16 +1,10 @@
 'use client';
 
 import { MusicTable } from "@/components/MusicTable";
+import { Music } from "@/types/MusicType";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
-interface Music {
-    id: number;
-    title: string;
-    artist: string;
-    liked: boolean;
-}
 
 type User = {
     id: number;

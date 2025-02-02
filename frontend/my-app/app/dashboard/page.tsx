@@ -5,19 +5,7 @@ import { UserTable } from '@/components/UserTable';
 import { MusicTable } from '@/components/MusicTable';
 import { UserMusicTable } from '@/components/UserMusicTable';
 import { useRouter } from 'next/navigation';
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
-interface Music {
-  id: number;
-  title: string;
-  artist: string;
-  liked: boolean;
-}
+import { Music, User } from '@/types';
 
 export default function Dashboard() {
   const router = useRouter();

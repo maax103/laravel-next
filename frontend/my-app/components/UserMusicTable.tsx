@@ -1,9 +1,4 @@
-interface Music {
-    id: number;
-    title: string;
-    artist: string;
-    liked: boolean;
-}
+import { Music } from "@/types/MusicType";
 
 interface UserMusicTableProps {
     musics: Music[];
