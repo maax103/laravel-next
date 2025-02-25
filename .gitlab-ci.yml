@@ -1,0 +1,30 @@
+stages:
+  - build
+  - deploy
+  - migrate
+  - test
+
+variables:
+  GIT_SSL_NO_VERIFY: "true"
+  GIT_STRATEGY: "none"
+
+build:
+  stage: build
+  script:
+    - git clone https://$GIT_ACCESS_TOKEN@10.0.6.30/proway/laravel-next.git --depth=1 .
+    - docker compose build
+
+deploy:
+  stage: deploy
+  script:
+    - docker compose up -d
+
+migrate:
+  stage: migrate
+  script:
+    - docker exec -it laravel bash -c "bash seed.sh && bash import-csv.sh"
+
+test:
+  stage: test
+  script:
+    - docker exec -it laravel php artisan test
