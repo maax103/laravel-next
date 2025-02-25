@@ -10,8 +10,8 @@ variables:
 
 before_script:
   - apk add --no-cache git docker-cli docker-compose
-  - dockerd &
-  - sleep 5
+  - nohup dockerd > /dev/null 2>&1 &
+  - while ! docker info &>/dev/null; do sleep 1; done
 
 build:
   stage: build
