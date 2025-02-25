@@ -3,18 +3,20 @@ image: docker:latest
 services:
   - docker:dind
 
-stages:
-  - build
-  - deploy
-  - migrate
-  - test
-
 variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_TLS_CERTDIR: ""
   GIT_SSL_NO_VERIFY: "true"
   GIT_STRATEGY: "none"
 
 before_script:
   - apk add --no-cache git docker-compose
+
+stages:
+  - build
+  - deploy
+  - migrate
+  - test
 
 build:
   stage: build
@@ -30,9 +32,9 @@ deploy:
 migrate:
   stage: migrate
   script:
-    - docker exec -it laravel bash -c "bash seed.sh && bash import-csv.sh"
+    - docker exec laravel bash -c "bash seed.sh && bash import-csv.sh"
 
 test:
   stage: test
   script:
-    - docker exec -it laravel php artisan test
+    - docker exec laravel php artisan test
