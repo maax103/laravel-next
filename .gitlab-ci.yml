@@ -11,7 +11,7 @@ variables:
 build:
   stage: build
   script:
-    - git clone https://$GIT_ACCESS_TOKEN@10.0.6.30/proway/laravel-next.git --depth=1 .
+    - git clone https://glpat-Fjk-d7zg1vM--b8Sk_ys@10.0.6.30/proway/laravel-next.git --depth=1 .
     - docker compose build
 
 deploy:
