@@ -12,8 +12,8 @@ variables:
   MYSQL_DATABASE: "laravel"
   MYSQL_ROOT_PASSWORD: "root"
   MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-  MYSQL_USER: "laravel"
-  MYSQL_PASSWORD: "laravel"
+  MYSQL_USER: "root"
+  MYSQL_PASSWORD: "root"
 
 # Estágio de clonagem e build do frontend
 build_frontend:
