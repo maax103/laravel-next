@@ -27,14 +27,14 @@ build_backend:
   stage: build_backend
   image: composer:latest
   script:
-    - git clone https://glpat-Fjk-d7zg1vM--b8Sk_ys@10.0.6.30/proway/laravel-next.git --depth=1 .
     - cd backend
+    - cp .env.example .env
     - composer install --no-dev --optimize-autoloader
     - php artisan key:generate
   artifacts:
     paths:
-      - vendor/
-      - .env
+      - backend/vendor/
+      - backend/.env
 
 # Estágio de deploy
 deploy:
