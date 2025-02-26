@@ -20,7 +20,7 @@ build_frontend:
     - npm run build
   artifacts:
     paths:
-      - frontend/my-app/build/
+      - frontend/my-app/.next/
 
 # Estágio de build do backend
 build_backend:
