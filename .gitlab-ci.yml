@@ -20,14 +20,15 @@ build_frontend:
     - npm run build
   artifacts:
     paths:
-      - frontend/my-app/.next/
+      - frontend/
+      - backend//
 
 # Estágio de build do backend
 build_backend:
   stage: build_backend
   image: composer:latest
   script:
-    - ls -la
+    - ls
     - cd backend
     - cp .env.example .env
     - composer install --no-dev --optimize-autoloader
