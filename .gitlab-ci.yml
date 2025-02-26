@@ -27,6 +27,7 @@ build_backend:
   stage: build_backend
   image: composer:latest
   script:
+    - ls -la
     - cd backend
     - cp .env.example .env
     - composer install --no-dev --optimize-autoloader
