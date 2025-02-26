@@ -8,61 +8,72 @@ stages:
 variables:
   GIT_SSL_NO_VERIFY: "true"
   GIT_STRATEGY: "none"
+  REPO_URL: "https://glpat-Fjk-d7zg1vM--b8Sk_ys@10.0.6.30/proway/laravel-next.git"
 
-# Estágio de build do frontend
+# Estágio de clonagem e build do frontend
 build_frontend:
   stage: build_frontend
   image: node:18
   script:
-    - git clone https://glpat-Fjk-d7zg1vM--b8Sk_ys@10.0.6.30/proway/laravel-next.git --depth=1 .
+    - git clone ${REPO_URL} --depth=1 .
     - cd frontend/my-app
     - npm install
     - npm run build
   artifacts:
     paths:
       - frontend/
-      - backend//
+      - backend/
 
 # Estágio de build do backend
 build_backend:
   stage: build_backend
   image: composer:latest
+  dependencies:
+    - build_frontend
   script:
-    - ls
     - cd backend
     - cp .env.example .env
     - composer install --no-dev --optimize-autoloader
     - php artisan key:generate
   artifacts:
     paths:
-      - backend/vendor/
-      - backend/.env
+      - frontend/
+      - backend/
 
 # Estágio de deploy
 deploy:
   stage: deploy
   image: php:8.2-cli
-  script:
-    - nohup php artisan serve --host=0.0.0.0 --port=8000 > backend.log 2>&1 &
   dependencies:
     - build_backend
+  script:
+    - apt-get update && apt-get install -y libzip-dev unzip
+    - docker-php-ext-install zip pdo pdo_mysql
+    - cd backend
+    - nohup php artisan serve --host=0.0.0.0 --port=8000 > backend.log 2>&1 &
 
 # Estágio de migrate
 migrate:
   stage: migrate
   image: php:8.2-cli
+  dependencies:
+    - build_backend
   script:
+    - apt-get update && apt-get install -y libzip-dev unzip
+    - docker-php-ext-install zip pdo pdo_mysql
+    - cd backend
     - php artisan migrate --force
     - php artisan db:seed
     - php artisan import-csv
-  dependencies:
-    - build_backend
 
 # Estágio de teste
 test:
   stage: test
   image: php:8.2-cli
-  script:
-    - php artisan test
   dependencies:
     - build_backend
+  script:
+    - apt-get update && apt-get install -y libzip-dev unzip
+    - docker-php-ext-install zip pdo pdo_mysql
+    - cd backend
+    - php artisan test
