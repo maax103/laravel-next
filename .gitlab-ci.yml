@@ -9,6 +9,8 @@ variables:
   GIT_SSL_NO_VERIFY: "true"
   GIT_STRATEGY: "none"
   REPO_URL: "https://glpat-Fjk-d7zg1vM--b8Sk_ys@10.0.6.30/proway/laravel-next.git"
+  MYSQL_DATABASE: "laravel"
+  MYSQL_ROOT_PASSWORD: "root"
 
 # Estágio de clonagem e build do frontend
 build_frontend:
@@ -35,6 +37,10 @@ build_backend:
   script:
     - cd backend
     - cp .env.example .env
+    - sed -i "s/DB_HOST=.*/DB_HOST=db/" .env
+    - sed -i "s/DB_DATABASE=.*/DB_DATABASE=laravel/" .env
+    - sed -i "s/DB_USERNAME=.*/DB_USERNAME=root/" .env
+    - sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=root/" .env
     - composer install --no-dev --optimize-autoloader
     - php artisan key:generate
   artifacts:
@@ -60,6 +66,12 @@ deploy:
   image: php:8.2-cli
   dependencies:
     - build_backend
+  services:
+    - name: mysql:8.0
+      alias: db
+  variables:
+    MYSQL_DATABASE: "${MYSQL_DATABASE}"
+    MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
   script:
     - apt-get update && apt-get install -y libzip-dev unzip
     - docker-php-ext-install zip pdo pdo_mysql
@@ -72,6 +84,12 @@ migrate:
   image: php:8.2-cli
   dependencies:
     - build_backend
+  services:
+    - name: mysql:8.0
+      alias: db
+  variables:
+    MYSQL_DATABASE: "${MYSQL_DATABASE}"
+    MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
   script:
     - apt-get update && apt-get install -y libzip-dev unzip
     - docker-php-ext-install zip pdo pdo_mysql
@@ -86,6 +104,12 @@ test:
   image: php:8.2-cli
   dependencies:
     - build_backend
+  services:
+    - name: mysql:8.0
+      alias: db
+  variables:
+    MYSQL_DATABASE: "${MYSQL_DATABASE}"
+    MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
   script:
     - apt-get update && apt-get install -y libzip-dev unzip
     - docker-php-ext-install zip pdo pdo_mysql
