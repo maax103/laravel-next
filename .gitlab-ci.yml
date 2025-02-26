@@ -21,7 +21,9 @@ build_frontend:
     - npm run build
   artifacts:
     paths:
-      - frontend/
+      - frontend/my-app/.next/
+      - frontend/my-app/public/
+      - frontend/my-app/package.json
       - backend/
 
 # Estágio de build do backend
@@ -37,8 +39,20 @@ build_backend:
     - php artisan key:generate
   artifacts:
     paths:
-      - frontend/
-      - backend/
+      - backend/vendor/
+      - backend/app/
+      - backend/bootstrap/
+      - backend/config/
+      - backend/database/
+      - backend/public/
+      - backend/resources/
+      - backend/routes/
+      - backend/storage/
+      - backend/artisan
+      - backend/.env
+      - frontend/my-app/.next/
+      - frontend/my-app/public/
+      - frontend/my-app/package.json
 
 # Estágio de deploy
 deploy:
