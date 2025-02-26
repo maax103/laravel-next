@@ -11,6 +11,9 @@ variables:
   REPO_URL: "https://glpat-Fjk-d7zg1vM--b8Sk_ys@10.0.6.30/proway/laravel-next.git"
   MYSQL_DATABASE: "laravel"
   MYSQL_ROOT_PASSWORD: "root"
+  MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+  MYSQL_USER: "laravel"
+  MYSQL_PASSWORD: "laravel"
 
 # Estágio de clonagem e build do frontend
 build_frontend:
@@ -39,8 +42,8 @@ build_backend:
     - cp .env.example .env
     - sed -i "s/DB_HOST=.*/DB_HOST=db/" .env
     - sed -i "s/DB_DATABASE=.*/DB_DATABASE=laravel/" .env
-    - sed -i "s/DB_USERNAME=.*/DB_USERNAME=root/" .env
-    - sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=root/" .env
+    - sed -i "s/DB_USERNAME=.*/DB_USERNAME=laravel/" .env
+    - sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=laravel/" .env
     - composer install --no-dev --optimize-autoloader
     - php artisan key:generate
   artifacts:
@@ -72,6 +75,9 @@ deploy:
   variables:
     MYSQL_DATABASE: "${MYSQL_DATABASE}"
     MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    MYSQL_ALLOW_EMPTY_PASSWORD: "${MYSQL_ALLOW_EMPTY_PASSWORD}"
+    MYSQL_USER: "${MYSQL_USER}"
+    MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
   script:
     - apt-get update && apt-get install -y libzip-dev unzip
     - docker-php-ext-install zip pdo pdo_mysql
@@ -90,10 +96,16 @@ migrate:
   variables:
     MYSQL_DATABASE: "${MYSQL_DATABASE}"
     MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    MYSQL_ALLOW_EMPTY_PASSWORD: "${MYSQL_ALLOW_EMPTY_PASSWORD}"
+    MYSQL_USER: "${MYSQL_USER}"
+    MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
   script:
-    - apt-get update && apt-get install -y libzip-dev unzip
+    - apt-get update && apt-get install -y libzip-dev unzip default-mysql-client
     - docker-php-ext-install zip pdo pdo_mysql
     - cd backend
+    - echo "Verificando conexão com o banco de dados..."
+    - mysql -h db -u laravel -plaravel -e "SHOW DATABASES;"
+    - echo "Executando migrações..."
     - php artisan migrate --force
     - php artisan db:seed
     - php artisan import-csv
@@ -110,6 +122,9 @@ test:
   variables:
     MYSQL_DATABASE: "${MYSQL_DATABASE}"
     MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    MYSQL_ALLOW_EMPTY_PASSWORD: "${MYSQL_ALLOW_EMPTY_PASSWORD}"
+    MYSQL_USER: "${MYSQL_USER}"
+    MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
   script:
     - apt-get update && apt-get install -y libzip-dev unzip
     - docker-php-ext-install zip pdo pdo_mysql
