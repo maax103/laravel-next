@@ -15,12 +15,12 @@ build_frontend:
   image: node:18
   script:
     - git clone https://glpat-Fjk-d7zg1vM--b8Sk_ys@10.0.6.30/proway/laravel-next.git --depth=1 .
-    - cd my-app
+    - cd frontend/my-app
     - npm install
     - npm run build
   artifacts:
     paths:
-      - my-app/build/
+      - frontend/my-app/build/
 
 # Estágio de build do backend
 build_backend:
@@ -28,6 +28,7 @@ build_backend:
   image: composer:latest
   script:
     - git clone https://glpat-Fjk-d7zg1vM--b8Sk_ys@10.0.6.30/proway/laravel-next.git --depth=1 .
+    - cd backend
     - composer install --no-dev --optimize-autoloader
     - php artisan key:generate
   artifacts:
